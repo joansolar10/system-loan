@@ -14,10 +14,10 @@ export interface Loan {
   id: number;
   client_id: number;
   fecha_entrega: string;
-  monto_principal: number;
-  interes_anual_porcentaje: number;
+  monto_principal: number | string;
+  interes_anual_porcentaje: number | string;
   plazo_en_dias: number;
-  cuota_fija: number;
+  cuota_fija: number | string;
   created_at: string;
   dni?: string;
   nombre_completo?: string;
@@ -28,10 +28,10 @@ export interface Payment {
   loan_id: number;
   numero_cuota: number;
   fecha_vencimiento: string;
-  interes_periodo: number;
-  capital_amortizado: number;
-  cuota_total: number;
-  saldo_restante: number;
+  interes_periodo: number | string;
+  capital_amortizado: number | string;
+  cuota_total: number | string;
+  saldo_restante: number | string;
   pagado: boolean;
   fecha_pago?: string;
 }
