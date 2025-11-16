@@ -7,95 +7,62 @@ Esta guía te ayudará a levantar el sistema de gestión de préstamos en tu ent
 Antes de comenzar, asegúrate de tener instalado:
 
 - ✅ Node.js v18 o superior
-- ✅ PostgreSQL v14 o superior
 - ✅ npm (viene con Node.js)
+- ✅ Una cuenta en Supabase (gratis) **O** PostgreSQL local
 
-## Paso 1: Instalar PostgreSQL
+## Opción 1: Supabase (Recomendado - Más Fácil) ⭐
 
-### Windows
-1. Descargar PostgreSQL desde https://www.postgresql.org/download/windows/
-2. Ejecutar el instalador
-3. Recordar la contraseña que estableciste para el usuario `postgres`
+### ¿Por qué Supabase?
+- ✅ No necesitas instalar PostgreSQL
+- ✅ Gratis para desarrollo
+- ✅ Se configura en 5 minutos
+- ✅ Dashboard visual para ver tus datos
 
-### macOS
-```bash
-brew install postgresql@14
-brew services start postgresql@14
-```
+### Paso 1: Configurar Supabase
 
-### Linux (Ubuntu/Debian)
-```bash
-sudo apt update
-sudo apt install postgresql postgresql-contrib
-sudo systemctl start postgresql
-```
+**Sigue la guía completa:** [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
 
-## Paso 2: Crear la Base de Datos
+**Resumen rápido:**
 
-```bash
-# Conectar a PostgreSQL
-psql -U postgres
+1. Crear cuenta en [supabase.com](https://supabase.com)
+2. Crear nuevo proyecto (guarda la contraseña)
+3. Ir a Settings → Database → Connection string
+4. Copiar la URI (modo "Session pooling")
 
-# Dentro de psql, ejecutar:
-CREATE DATABASE loan_management;
-
-# Verificar que se creó
-\l
-
-# Salir
-\q
-```
-
-## Paso 3: Configurar Backend
+### Paso 2: Configurar Backend
 
 ```bash
-# Ir a la carpeta backend
 cd backend
-
-# Instalar dependencias
 npm install
-
-# Copiar archivo de variables de entorno
 cp .env.example .env
 ```
 
-**Editar el archivo `.env`** y configurar:
+Editar `.env`:
 
 ```env
-DB_PASSWORD=tu_contraseña_de_postgres
-JWT_SECRET=cambia-este-secreto-por-uno-seguro-aleatorio
+USE_SUPABASE=true
+DATABASE_URL=postgresql://postgres.xxxxx:TuPassword@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+JWT_SECRET=cambia-este-secreto-por-uno-aleatorio
+ADMIN_EMAIL=admin@loans.com
+ADMIN_PASSWORD=Admin123!
 ```
 
 **Ejecutar migraciones:**
 
 ```bash
 npm run migrate
-```
-
-**Crear usuario administrador:**
-
-```bash
 npm run seed
 ```
 
-## Paso 4: Configurar Frontend
+### Paso 3: Configurar Frontend
 
 ```bash
-# Ir a la carpeta frontend (desde la raíz del proyecto)
 cd ../frontend
-
-# Instalar dependencias
 npm install
-
-# Copiar archivo de variables de entorno
 cp .env.example .env
 ```
 
-El archivo `.env` ya debe tener la configuración correcta por defecto.
-
-## Paso 5: Ejecutar la Aplicación
-
-### Opción A: Dos terminales separadas
+### Paso 4: Ejecutar la Aplicación
 
 **Terminal 1 (Backend):**
 ```bash
@@ -105,7 +72,7 @@ npm run dev
 
 Deberías ver:
 ```
-✅ Connected to PostgreSQL database
+✅ Connected to PostgreSQL database (Supabase)
 🚀 Server running on port 3000
 ```
 
@@ -115,49 +82,122 @@ cd frontend
 npm run dev
 ```
 
-Deberías ver:
-```
-VITE v5.x.x  ready in xxx ms
+### Paso 5: Acceder
 
-➜  Local:   http://localhost:5173/
+Abrir: **http://localhost:5173**
+
+Login:
+- Email: `admin@loans.com`
+- Password: `Admin123!`
+
+---
+
+## Opción 2: PostgreSQL Local (Alternativa)
+
+### Paso 1: Instalar PostgreSQL
+
+#### Windows
+1. Descargar PostgreSQL desde https://www.postgresql.org/download/windows/
+2. Ejecutar el instalador
+3. Recordar la contraseña del usuario `postgres`
+
+#### macOS
+```bash
+brew install postgresql@14
+brew services start postgresql@14
 ```
 
-### Opción B: VS Code con terminales divididas
+#### Linux (Ubuntu/Debian)
+```bash
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start postgresql
+```
+
+### Paso 2: Crear Base de Datos
+
+```bash
+# Conectar a PostgreSQL
+psql -U postgres
+
+# Dentro de psql:
+CREATE DATABASE loan_management;
+\l  # Verificar
+\q  # Salir
+```
+
+### Paso 3: Configurar Backend
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+```
+
+Editar `.env`:
+
+```env
+USE_SUPABASE=false
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=loan_management
+DB_USER=postgres
+DB_PASSWORD=tu_contraseña_postgres
+JWT_SECRET=cambia-este-secreto
+ADMIN_EMAIL=admin@loans.com
+ADMIN_PASSWORD=Admin123!
+```
+
+**Ejecutar migraciones:**
+
+```bash
+npm run migrate
+npm run seed
+```
+
+### Paso 4: Configurar Frontend
+
+```bash
+cd ../frontend
+npm install
+cp .env.example .env
+```
+
+### Paso 5: Ejecutar
+
+**Terminal 1:**
+```bash
+cd backend
+npm run dev
+```
+
+**Terminal 2:**
+```bash
+cd frontend
+npm run dev
+```
+
+Acceder a: http://localhost:5173
+
+---
+
+## Uso con VS Code (Ambas opciones)
 
 1. Abrir VS Code
-2. Abrir el proyecto: `File > Open Folder` → seleccionar carpeta `system-loan`
-3. Abrir terminal integrada: `Ctrl + \`` (o `View > Terminal`)
-4. Dividir terminal: Click en el ícono de dividir (o `Ctrl + Shift + 5`)
-5. En la primera terminal:
-   ```bash
-   cd backend
-   npm run dev
-   ```
-6. En la segunda terminal:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+2. Abrir carpeta `system-loan`
+3. Abrir terminal integrada (`Ctrl + \``)
+4. Dividir terminal (ícono de dividir)
+5. Terminal 1: `cd backend && npm run dev`
+6. Terminal 2: `cd frontend && npm run dev`
 
-## Paso 6: Acceder a la Aplicación
-
-1. Abrir navegador en: **http://localhost:5173**
-
-2. Usar credenciales por defecto:
-   - Email: `admin@loans.com`
-   - Password: `Admin123!`
-
-3. ¡Listo! Ya puedes crear préstamos.
-
-## Verificación de Instalación
+## Verificación
 
 ### ✅ Checklist
 
-- [ ] PostgreSQL está corriendo
-- [ ] Base de datos `loan_management` creada
-- [ ] Backend ejecutando en puerto 3000
-- [ ] Frontend ejecutando en puerto 5173
-- [ ] Puedes hacer login en la aplicación
+- [ ] Backend corriendo (puerto 3000)
+- [ ] Frontend corriendo (puerto 5173)
+- [ ] Puedes hacer login
+- [ ] Puedes crear un préstamo de prueba
 
 ### Comandos Útiles
 
@@ -165,7 +205,6 @@ VITE v5.x.x  ready in xxx ms
 ```bash
 cd backend
 npm run dev
-# Los logs aparecerán en la consola
 ```
 
 **Ejecutar tests:**
@@ -174,7 +213,7 @@ cd backend
 npm test
 ```
 
-**Limpiar y reinstalar dependencias:**
+**Limpiar y reinstalar:**
 ```bash
 # Backend
 cd backend
@@ -189,9 +228,25 @@ npm install
 
 ## Problemas Comunes
 
-### Error: "connect ECONNREFUSED ::1:5432"
+### Supabase
 
-**Solución:** PostgreSQL no está corriendo
+**Error: "password authentication failed"**
+
+Solución: Verifica que la contraseña en `DATABASE_URL` sea correcta.
+
+1. Supabase Dashboard → Settings → Database
+2. Reset database password
+3. Actualiza `DATABASE_URL` con la nueva contraseña
+
+**Error: "SSL connection required"**
+
+Solución: Ya está configurado. Asegúrate de tener `USE_SUPABASE=true`
+
+### PostgreSQL Local
+
+**Error: "connect ECONNREFUSED ::1:5432"**
+
+Solución: PostgreSQL no está corriendo
 
 ```bash
 # Linux
@@ -201,19 +256,22 @@ sudo systemctl start postgresql
 brew services start postgresql@14
 
 # Windows
-Iniciar el servicio desde Services.msc
+Iniciar servicio desde Services.msc
 ```
 
-### Error: "password authentication failed"
+**Error: "database does not exist"**
 
-**Solución:** Contraseña incorrecta en `.env`
+Solución: Crear la base de datos
 
-1. Editar `backend/.env`
-2. Cambiar `DB_PASSWORD` a la contraseña correcta de PostgreSQL
+```bash
+psql -U postgres -c "CREATE DATABASE loan_management;"
+```
 
-### Error: "Port 3000 is already in use"
+### General
 
-**Solución:** Otro proceso está usando el puerto
+**Error: "Port 3000 already in use"**
+
+Solución: Matar el proceso
 
 ```bash
 # Linux/macOS
@@ -224,26 +282,32 @@ netstat -ano | findstr :3000
 taskkill /PID <PID> /F
 ```
 
-### Error: "Cannot find module"
+**Error: "Cannot find module"**
 
-**Solución:** Reinstalar dependencias
+Solución: Reinstalar dependencias
 
 ```bash
 npm install
 ```
 
-## Siguiente Paso
+## Próximos Pasos
 
-Una vez que todo esté funcionando, lee el `README.md` para más información sobre:
-- Uso de la aplicación
-- API endpoints
-- Estructura del proyecto
-- Despliegue en producción
+Una vez funcionando:
+
+1. Lee el [README.md](./README.md) completo
+2. Explora la [Postman Collection](./postman_collection.json)
+3. Revisa [FEATURES.md](./FEATURES.md) para ver todas las capacidades
+4. Si usas Supabase, revisa [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
 
 ## Soporte
 
-Si tienes problemas, revisa:
-1. Los logs en la consola
-2. El archivo `.env` tiene todas las variables
-3. PostgreSQL está corriendo
-4. Los puertos 3000 y 5173 están libres
+Si tienes problemas:
+
+1. Revisa los logs en la consola
+2. Verifica el archivo `.env`
+3. Asegúrate que los puertos estén libres
+4. Consulta las guías específicas:
+   - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) para Supabase
+   - [README.md](./README.md) para referencia completa
+
+¡Listo para gestionar préstamos! 🚀

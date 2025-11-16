@@ -7,11 +7,13 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
 
   db: {
+    url: process.env.DATABASE_URL || '',
     host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432'),
-    name: process.env.DB_NAME || 'loan_management',
+    port: parseInt(process.env.DB_PORT || '6543'),
+    name: process.env.DB_NAME || 'postgres',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
+    useSupabase: process.env.USE_SUPABASE === 'true',
   },
 
   jwt: {

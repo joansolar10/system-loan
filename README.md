@@ -33,68 +33,85 @@ Sistema completo para gestionar préstamos con cálculo de amortización frances
 ## Requisitos Previos
 
 - Node.js >= 18.x
-- PostgreSQL >= 14.x
+- **Opción A (Recomendado):** Cuenta en [Supabase](https://supabase.com) (gratis)
+- **Opción B:** PostgreSQL >= 14.x instalado localmente
 - npm o yarn
 
 ## Instalación y Configuración
 
-### 1. Clonar el repositorio
+### Opción A: Con Supabase (Recomendado - Más Fácil) ⭐
 
-```bash
-git clone <repository-url>
-cd system-loan
-```
+**📖 Guía completa:** Ver [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
 
-### 2. Configurar Backend
+**Resumen rápido:**
+
+1. **Crear proyecto en Supabase:**
+   - Ir a [supabase.com](https://supabase.com) y crear cuenta
+   - Crear nuevo proyecto (guarda la contraseña)
+   - Obtener connection string: Settings → Database → Connection string (URI)
+
+2. **Configurar Backend:**
 
 ```bash
 cd backend
 npm install
-```
-
-Crear archivo `.env` basado en `.env.example`:
-
-```bash
 cp .env.example .env
 ```
 
-Editar `.env` con tus configuraciones:
+Editar `.env`:
 
 ```env
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=loan_management
-DB_USER=postgres
-DB_PASSWORD=tu_password
-
-# JWT
+USE_SUPABASE=true
+DATABASE_URL=postgresql://postgres.xxxxx:TuPassword@aws-0-us-east-1.pooler.supabase.com:6543/postgres
 JWT_SECRET=tu-secreto-super-seguro-cambialo-en-produccion
-
-# Admin (para seed)
 ADMIN_EMAIL=admin@loans.com
 ADMIN_PASSWORD=Admin123!
 ```
 
-### 3. Configurar PostgreSQL
-
-Crear la base de datos:
+3. **Ejecutar migraciones:**
 
 ```bash
+npm run migrate  # Crear tablas en Supabase
+npm run seed     # Crear usuario admin
+```
+
+### Opción B: Con PostgreSQL Local
+
+1. **Instalar y configurar PostgreSQL:**
+
+```bash
+# Crear base de datos
 psql -U postgres
 CREATE DATABASE loan_management;
 \q
 ```
 
-Ejecutar migraciones:
+2. **Configurar Backend:**
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+```
+
+Editar `.env`:
+
+```env
+USE_SUPABASE=false
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=loan_management
+DB_USER=postgres
+DB_PASSWORD=tu_password
+JWT_SECRET=tu-secreto-super-seguro
+ADMIN_EMAIL=admin@loans.com
+ADMIN_PASSWORD=Admin123!
+```
+
+3. **Ejecutar migraciones:**
 
 ```bash
 npm run migrate
-```
-
-Crear usuario administrador:
-
-```bash
 npm run seed
 ```
 
